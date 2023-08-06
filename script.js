@@ -4,9 +4,10 @@ const startButton = document.getElementById('startButton');
 const audioTick = document.getElementById('audioTick');
 const audioEnd = document.getElementById('audioEnd');
 
-// Set the initial timer value in seconds (15 minutes in this example)
-let timerSeconds = 900;
+let timerSeconds = 0;
 let interval;
+let timerRunning;
+let resetClick = 0;
 
 // Format the time as "mm:ss"
 function formatTime(seconds) {
@@ -22,11 +23,6 @@ function updateTimerDisplay() {
   timerDisplay.textContent = formatTime(timerSeconds);
 }
 
-// Handle the button click
-function handleButtonClick() {
-  timerSeconds += 60; // Add 1 minute to the timer
-  updateTimerDisplay();
-}
 
 // Countdown function
 function countdown() {
@@ -37,15 +33,70 @@ function countdown() {
   if (timerSeconds <= 0) {
     clearInterval(interval);
     audioEnd.play();
-    startButton.disabled = false;
+    timerRunning = 0;
   }
 }
 
 // Attach the click event to the button
 startButton.addEventListener('click', function() {
-  startButton.disabled = true;
-  interval = setInterval(countdown, 1000);
+    if(resetClick){ //If this click is the one that resets the timer after a hold it should not add time or start the timer
+        resetClick = 0;
+    }
+    else{
+        timerSeconds += 61;
+        if(!timerRunning){
+            interval = setInterval(countdown, 1000);
+            timerRunning = 1;
+        }
+    }
 });
 
 // Initialize the timer display
 updateTimerDisplay();
+
+//Timer reset by holding button for 5 seconds
+
+class ClickAndHold {
+    /**
+     * 
+     * @param {EventTarget} target The HTML element to apply the event to 
+     * @param {Function} callback The function to run when the target is clicked and held 
+     */
+    constructor(target, callback){
+        this.target = target;
+        this.callback = callback;
+        this.isHeld = false;
+        this.activeHoldTimoutId = null;
+
+        ["mousedown", "touchstart"].forEach(type => {
+            this.target.addEventListener(type, this._onHoldStart.bind(this));
+        });
+
+        ["mouseup", "mouseleave", "mouseout", "touchend", "touchcancel" ].forEach(type => {
+            this.target.addEventListener(type, this._onHoldEnd.bind(this));
+        });
+    }
+
+    _onHoldStart(){
+        this.isHeld = true;
+
+        this.activeHoldTimoutId = setTimeout(() => {
+            if (this.isHeld){
+                this.callback();        
+            }
+        }, 5000);
+    }
+
+    
+    _onHoldEnd(){
+        this.isHeld = false;
+        clearTimeout(this.activeHoldTimoutId);
+    }
+}
+
+new ClickAndHold(startButton, () => {
+    timerSeconds = 1;
+     resetClick = 1;
+     //timerRunning = 0;
+   
+})
