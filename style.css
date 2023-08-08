@@ -2,18 +2,58 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
     margin-top: 50px;
+    background-color: rgb(55, 55, 55);
   }
   
   .timer {
     display: flex;
     flex-direction: column;
     align-items: center;
+    color: white;
   }
   
   #startButton {
+    background-color: rgb(255, 255, 255);
+    transition-duration: 0.1s;
     margin-top: 20px;
     padding: 10px 20px;
-    font-size: 16px;
+    height: 100px;
+    width: 100px;
     cursor: pointer;
+    border-radius: 50%;
+    border: 10px solid rgb(255, 241, 137);
+    box-shadow: 0 9px #999;
+  }
+
+  #startButton:hover {
+    background-color: rgb(241, 241, 241);
+  }
+
+  #startButton:active {
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
   }
   
+  .collapsible {
+    background-color: #777;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+  }
+  
+  .active, .collapsible:hover {
+    background-color: #555;
+    display: block;
+  }
+  
+  .content {
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+    background-color: #f1f1f1;
+  }
