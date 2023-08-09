@@ -11,6 +11,10 @@ body {
     align-items: center;
     color: white;
   }
+
+  #timerDisplay {
+    display: none;
+  }
   
   #startButton {
     background-color: rgb(255, 255, 255);
