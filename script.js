@@ -8,6 +8,23 @@ let timerSeconds = 0;
 let interval;
 let timerRunning;
 let resetClick = 0;
+var soundOn = true; 
+
+//Setup speech
+
+
+function textToSpeech(text){
+    if ("speechSynthesis" in window) {
+    const synthesis = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.7;
+    synthesis.speak(utterance);
+    
+  }
+  else {
+    alert("Web Speech API is not supported in this browser");
+  }
+}
 
 // Format the time as "mm:ss"
 function formatTime(seconds) {
@@ -26,14 +43,19 @@ function updateTimerDisplay() {
 
 // Countdown function
 function countdown() {
+  if(timerSeconds % 60 === 1){ // Notify for each passing minute
+    textToSpeech(String(Math.floor(timerSeconds / 60)) + "minutes");
+  }
+
   timerSeconds -= 1;
   updateTimerDisplay();
-  audioTick.play();
+  //audioTick.play();
 
   if (timerSeconds <= 0) {
     clearInterval(interval);
     audioEnd.play();
     timerRunning = 0;
+    textToSpeech("Stop");
   }
 }
 
